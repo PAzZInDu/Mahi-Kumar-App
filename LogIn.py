@@ -9,11 +9,11 @@ st.title("Bee Toxicity Classification")
 st.image(IMAGE_ADDRESS)
 
 
-# if not st.user.is_logged_in:
-#     if st.sidebar.button("Log in with Google", type="primary", icon=":material/login:"):
-#         st.login()
+if not st.user.is_logged_in:
+    if st.sidebar.button("Log in with Google", type="primary", icon=":material/login:"):
+        st.login()
 
-# else:
-#     if st.sidebar.button("Log out", type="secondary", icon=":material/logout:"):
-#         st.logout()
-#         st.stop()
+else:
+    if st.sidebar.button("Log out", type="secondary", icon=":material/logout:"):
+        st.logout()
+        st.stop()
