@@ -19,10 +19,22 @@ st.markdown(
     """
     <style>
     .main .block-container {max-width: 850px; padding-top: 2rem;}
-    div[data-testid="stForm"] {border: 1px solid #dbeafe; border-radius: 18px; padding: 1.4rem;}
+    [data-testid="stAppViewContainer"] {background: #050505;}
+    div[data-testid="stForm"] {background: #0f0f0f; border: 1px solid #333333; border-radius: 18px; padding: 1.4rem;}
     div[data-testid="stNumberInput"] label, div[data-testid="stSelectbox"] label {font-weight: 600;}
-    .info-card {padding: 1rem 1.2rem; border-radius: 14px; background: #eff6ff;
-        border-left: 5px solid #2563eb; margin: .5rem 0 1.5rem;}
+    .info-card {padding: 1rem 1.2rem; border-radius: 14px; background: #171717;
+        border: 1px solid #7f1d1d; border-left: 5px solid #ef4444;
+        color: #fee2e2; margin: .5rem 0 1.5rem;}
+    div[data-testid="stNumberInput"]:focus-within,
+    div[data-testid="stSelectbox"]:focus-within {
+        border: 1px solid #ef4444; border-radius: 10px;
+        box-shadow: 0 0 16px rgba(239, 68, 68, .22);
+    }
+    button[kind="primary"] {
+        background: linear-gradient(90deg, #ef4444 0%, #b91c1c 55%, #7f1d1d 100%);
+        border: 1px solid #ef4444; color: #ffffff;
+    }
+    button[kind="primary"]:hover {border-color: #fca5a5; filter: brightness(1.08);}
     </style>
     """,
     unsafe_allow_html=True,

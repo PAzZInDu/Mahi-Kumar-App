@@ -12,35 +12,44 @@ st.markdown(
     """
     <style>
     .main .block-container {max-width: 900px; padding-top: 3rem; padding-bottom: 3rem;}
-    [data-testid="stSidebar"] {background: #f8fafc;}
+    [data-testid="stAppViewContainer"] {background: #050505;}
+    [data-testid="stSidebar"] {background: #0a0a0a; border-right: 1px solid #333333;}
     .hero {
         padding: 2.2rem; border-radius: 24px;
-        background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
-        border: 1px solid #dbeafe; margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #171717 0%, #0d0d0d 100%);
+        border: 1px solid #333333; margin-bottom: 1.5rem;
     }
     .hero-badge {
         display: inline-block; padding: .35rem .75rem; border-radius: 999px;
-        background: #dbeafe; color: #1d4ed8; font-size: .82rem;
+        background: linear-gradient(90deg, #7f1d1d, #450a0a); color: #fecaca;
+        border: 1px solid #991b1b; font-size: .82rem;
         font-weight: 700; letter-spacing: .03em; margin-bottom: .8rem;
     }
-    .hero h1 {font-size: 2.45rem; line-height: 1.12; margin: 0 0 .8rem; color: #0f172a;}
-    .hero p {font-size: 1.05rem; line-height: 1.65; color: #475569; margin: 0;}
+    .hero h1 {font-size: 2.45rem; line-height: 1.12; margin: 0 0 .8rem; color: #f1f5f9;}
+    .hero p {font-size: 1.05rem; line-height: 1.65; color: #c7c7c7; margin: 0;}
     .step-card {
         min-height: 170px; padding: 1.25rem; border-radius: 18px;
-        background: #ffffff; border: 1px solid #e2e8f0;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+        background: #121212; border: 1px solid #333333;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
     }
     .step-number {
         width: 34px; height: 34px; display: inline-flex; align-items: center;
-        justify-content: center; border-radius: 10px; background: #2563eb;
-        color: white; font-weight: 700; margin-bottom: .7rem;
+        justify-content: center; border-radius: 10px;
+        background: linear-gradient(135deg, #ef4444, #991b1b);
+        color: #fff1f2; font-weight: 700; margin-bottom: .7rem;
     }
-    .step-card h3 {font-size: 1.05rem; margin: 0 0 .45rem; color: #0f172a;}
-    .step-card p {font-size: .92rem; line-height: 1.5; color: #64748b; margin: 0;}
+    .step-card h3 {font-size: 1.05rem; margin: 0 0 .45rem; color: #f1f5f9;}
+    .step-card p {font-size: .92rem; line-height: 1.5; color: #b8b8b8; margin: 0;}
     .privacy-note {
         margin-top: 1.5rem; padding: 1rem 1.15rem; border-radius: 14px;
-        background: #f8fafc; border-left: 4px solid #64748b; color: #475569;
+        background: #121212; border: 1px solid #333333;
+        border-left: 4px solid #f59e0b; color: #c7c7c7;
     }
+    button[kind="primary"] {
+        background: linear-gradient(90deg, #ef4444 0%, #b91c1c 55%, #7f1d1d 100%);
+        border: 1px solid #ef4444; color: #ffffff;
+    }
+    button[kind="primary"]:hover {border-color: #fca5a5; filter: brightness(1.08);}
     </style>
     """,
     unsafe_allow_html=True,

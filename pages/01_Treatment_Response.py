@@ -20,10 +20,18 @@ st.markdown(
     """
     <style>
     .main .block-container {max-width: 900px; padding-top: 2rem;}
-    div[data-testid="stForm"] {border: 1px solid #dcfce7; border-radius: 18px; padding: 1.4rem;}
+    [data-testid="stAppViewContainer"] {background: #050505;}
+    div[data-testid="stForm"] {background: #0f0f0f; border: 1px solid #333333; border-radius: 18px; padding: 1.4rem;}
     div[data-testid="stSelectbox"] label {font-weight: 600;}
-    .info-card {padding: 1rem 1.2rem; border-radius: 14px; background: #f0fdf4;
-        border-left: 5px solid #16a34a; margin: .5rem 0 1.5rem;}
+    .info-card {padding: 1rem 1.2rem; border-radius: 14px; background: #171717;
+        border: 1px solid #14532d; border-left: 5px solid #34d399;
+        color: #d1fae5; margin: .5rem 0 1.5rem;}
+    div[data-testid="stSelectbox"]:focus-within {border-color: #34d399; border-radius: 10px;}
+    button[kind="primary"] {
+        background: linear-gradient(90deg, #ef4444 0%, #b91c1c 55%, #7f1d1d 100%);
+        border: 1px solid #ef4444; color: #ffffff;
+    }
+    button[kind="primary"]:hover {border-color: #fca5a5; filter: brightness(1.08);}
     </style>
     """,
     unsafe_allow_html=True,
@@ -228,6 +236,13 @@ SECTION_HELP = {
     "Fundus photography": "Grading results from photographs of the back of the study eye.",
 }
 
+SECTION_ICONS = {
+    "Patient and treatment": "💊",
+    "Eye history and examination": "🩺",
+    "OCT findings": "👁️",
+    "Fundus photography": "📸",
+}
+
 FIELD_DETAILS = {
     "treatment_group": ("Planned anti-VEGF medicine", "Select the injection medicine assigned for treatment."),
     "study_eye": ("Study eye", "OD means right eye; OS means left eye."),
@@ -294,7 +309,7 @@ with st.form("patient_categorical_inputs"):
     selected_values = {}
 
     for section_name, section_options in CATEGORICAL_SECTIONS.items():
-        st.subheader(section_name)
+        st.subheader(f"{SECTION_ICONS[section_name]} {section_name}")
         st.caption(SECTION_HELP[section_name])
 
         for column_name, categories in section_options.items():
