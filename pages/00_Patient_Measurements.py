@@ -3,12 +3,29 @@ import pickle
 import pandas as pd
 import streamlit as st
 
+# Require user authentication
+if not st.user.is_logged_in:
+    st.error("Please log in to access the app.")
+    st.stop()
 
 
 st.set_page_config(
-    page_title="Numerical Clinical Inputs",
+    page_title="Patient Measurements",
     page_icon="📊",
     layout="centered",
+)
+
+st.markdown(
+    """
+    <style>
+    .main .block-container {max-width: 850px; padding-top: 2rem;}
+    div[data-testid="stForm"] {border: 1px solid #dbeafe; border-radius: 18px; padding: 1.4rem;}
+    div[data-testid="stNumberInput"] label, div[data-testid="stSelectbox"] label {font-weight: 600;}
+    .info-card {padding: 1rem 1.2rem; border-radius: 14px; background: #eff6ff;
+        border-left: 5px solid #2563eb; margin: .5rem 0 1.5rem;}
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
 
@@ -45,22 +62,25 @@ def history_input(column_name: str, label: str) -> float:
         label,
         options=["No / not recorded", "Yes"],
         key=column_name,
-        help=(
-            f"Output column: {column_name}. Yes is stored as 1; "
-            "No/not recorded is stored as 0."
-        ),
+        help="Choose Yes only when this treatment or operation is documented in the patient's medical record.",
     )
     return 1.0 if answer == "Yes" else 0.0
 
 
-st.title("Numerical Clinical Inputs")
-st.caption(
-    "Enter raw baseline values. Scaling should be performed later by the fitted "
-    "preprocessor."
+st.title("📋 Patient Measurements")
+st.markdown(
+    """
+    <div class="info-card"><strong>Step 1 of 2</strong><br>
+    Enter measurements taken before treatment began. Most values can be found in the
+    baseline visit notes, blood-test report, eye examination, and OCT report.</div>
+    """,
+    unsafe_allow_html=True,
 )
+st.caption("Use the ⓘ beside a field for guidance. Replace all example values with the patient's actual results.")
 
 with st.form("numerical_patient_inputs"):
-    st.subheader("Patient information")
+    st.subheader("👤 About the patient")
+    st.caption("Start with the patient's current age and the age when diabetes was first diagnosed.")
     age_column, diabetes_age_column = st.columns(2)
     age_at_enrollment = age_column.number_input(
         "Age at enrollment (years)",
@@ -69,6 +89,7 @@ with st.form("numerical_patient_inputs"):
         value=60,
         step=1,
         key="age_at_enrollment",
+        help="Age in completed years at the start of the study or treatment.",
     )
     diabetes_age = diabetes_age_column.number_input(
         "Age at diabetes diagnosis (years)",
@@ -77,17 +98,19 @@ with st.form("numerical_patient_inputs"):
         value=44,
         step=1,
         key="DiabAge",
+        help="Age when a clinician first diagnosed diabetes. This should normally not be greater than the age above.",
     )
 
-    st.subheader("Study-eye treatment and surgery history")
-    st.caption("Choose whether each event was recorded for the randomized study eye.")
+    st.subheader("🩺 Previous treatment and surgery")
+    st.caption("Answer for the study eye—the eye being assessed—not the other eye.")
     history_values = {}
     history_columns = st.columns(2)
     for index, (column_name, label) in enumerate(HISTORY_FIELDS.items()):
         with history_columns[index % 2]:
             history_values[column_name] = history_input(column_name, label)
 
-    st.subheader("Baseline systemic measurements")
+    st.subheader("❤️ General health measurements")
+    st.caption("Use readings recorded at the baseline visit, before the new eye treatment began.")
     systemic_left, systemic_right = st.columns(2)
     baseline_systolic_avg = systemic_left.number_input(
         "Average systolic BP (mmHg)",
@@ -97,6 +120,7 @@ with st.form("numerical_patient_inputs"):
         step=0.1,
         format="%.1f",
         key="baseline_systolic_avg",
+        help="The upper number in a blood-pressure reading. Enter the recorded average if several readings were taken.",
     )
     baseline_diastolic_avg = systemic_right.number_input(
         "Average diastolic BP (mmHg)",
@@ -106,6 +130,7 @@ with st.form("numerical_patient_inputs"):
         step=0.1,
         format="%.1f",
         key="baseline_diastolic_avg",
+        help="The lower number in a blood-pressure reading. Enter the recorded average if several readings were taken.",
     )
     baseline_hba1c = systemic_left.number_input(
         "HbA1c (%)",
@@ -115,6 +140,7 @@ with st.form("numerical_patient_inputs"):
         step=0.1,
         format="%.1f",
         key="baseline_hba1c",
+        help="HbA1c shows average blood sugar over roughly 2–3 months. Copy the percentage from the baseline lab report.",
     )
     baseline_iop = systemic_right.number_input(
         "Study-eye IOP (mmHg)",
@@ -124,9 +150,11 @@ with st.form("numerical_patient_inputs"):
         step=0.5,
         format="%.1f",
         key="baseline_iop",
+        help="Intraocular pressure (IOP) is the pressure inside the study eye, measured during the eye examination.",
     )
 
-    st.subheader("Baseline OCT measurements")
+    st.subheader("👁️ OCT scan measurements")
+    st.caption("OCT is the scan used to measure retinal thickness. Copy these values from the baseline OCT report.")
     oct_left, oct_right = st.columns(2)
     baseline_site_oct_center = oct_left.number_input(
         "Site OCT center thickness",
@@ -135,6 +163,7 @@ with st.form("numerical_patient_inputs"):
         value=426.5,
         step=0.5,
         key="baseline_site_oct_center",
+        help="Central retinal thickness measured by the clinic or study site, usually in micrometres (µm).",
     )
     baseline_site_oct_signal = oct_right.number_input(
         "Site OCT signal strength",
@@ -143,6 +172,7 @@ with st.form("numerical_patient_inputs"):
         value=10.0,
         step=1.0,
         key="baseline_site_oct_signal",
+        help="The image-quality or signal-strength score shown by the clinic's OCT machine.",
     )
     baseline_rc_oct_cent_point = oct_left.number_input(
         "Reading-center OCT central point",
@@ -151,6 +181,7 @@ with st.form("numerical_patient_inputs"):
         value=441.0,
         step=1.0,
         key="baseline_rc_oct_cent_point",
+        help="Thickness at the exact centre of the retina measured by the reading centre, usually in micrometres (µm).",
     )
     baseline_rc_oct_center = oct_right.number_input(
         "Reading-center OCT center thickness",
@@ -159,6 +190,7 @@ with st.form("numerical_patient_inputs"):
         value=426.0,
         step=1.0,
         key="baseline_rc_oct_center",
+        help="Average thickness of the central retinal area reported by the independent reading centre.",
     )
     baseline_rc_oct_center_calc = oct_left.number_input(
         "Calculated OCT central-subfield thickness",
@@ -167,6 +199,7 @@ with st.form("numerical_patient_inputs"):
         value=429.0,
         step=1.0,
         key="baseline_rc_oct_center_calc",
+        help="Calculated central-subfield thickness shown in the reading-centre OCT report.",
     )
     baseline_rc_oct_signal = oct_right.number_input(
         "Reading-center OCT signal strength",
@@ -175,9 +208,11 @@ with st.form("numerical_patient_inputs"):
         value=10.0,
         step=1.0,
         key="baseline_rc_oct_signal",
+        help="The OCT image-quality score assigned by the independent reading centre.",
     )
 
-    st.subheader("Baseline visual acuity")
+    st.subheader("🔤 Vision test")
+    st.caption("Enter the letter score from the study eye's baseline ETDRS vision-chart test.")
     study_eye_etdrs_baseline = st.number_input(
         "Study-eye ETDRS letter score",
         min_value=0.0,
@@ -185,10 +220,11 @@ with st.form("numerical_patient_inputs"):
         value=69.0,
         step=1.0,
         key="study_eye_etdrs_baseline",
+        help="Number of ETDRS chart letters correctly identified. A higher score generally means better visual acuity.",
     )
 
     submitted = st.form_submit_button(
-        "Save numerical inputs",
+        "Save measurements and continue",
         type="primary",
         use_container_width=True,
     )
@@ -236,4 +272,15 @@ if submitted:
 
         st.session_state.patient_records = scaled
 
+        st.success("Measurements saved. Continue to Step 2 to add the remaining patient details.")
+
         st.toast("✅ Patient Details Recored")
+
+if len(st.session_state.get("patient_records", [])):
+    st.info("Step 1 is complete. Your measurements will be used on the next page.")
+    if st.button(
+        "Continue to Treatment Response →",
+        type="primary",
+        use_container_width=True,
+    ):
+        st.switch_page("pages/01_Treatment_Response.py")
